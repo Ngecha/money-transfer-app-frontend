@@ -6,6 +6,7 @@ import SignUp from "./Pages/SignUp";
 import App from "./App";
 import LandingPage from "./Pages/LandingPage";
 import DashboardPage from "./Pages/Dashboard";
+import Beneficiaries from "./Pages/Beneficiaries";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
       { path: "/dashboard", element: <DashboardPage /> },
       { path: "/login", element: <Login /> },
       { path: "/signup", element: <SignUp /> },
+      { path: "/beneficaries", element:<Beneficiaries />}
     ],
   },
 ]);

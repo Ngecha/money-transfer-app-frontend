@@ -6,7 +6,7 @@ export default function WalletCard({ userId }) {
 
   useEffect(() => {
     const fetchWallet = async () => {
-      const response = await fetch(`/wallet/${userId}`);
+      const response = await fetch(`http://127.0.0.1:5000/wallet/3`);
       const data = await response.json();
       if (data.wallets && data.wallets.length > 0) {
         setWallet(data.wallets[0]); // Assuming one wallet per user
@@ -17,7 +17,7 @@ export default function WalletCard({ userId }) {
 
   const handleFund = async () => {
     const amount = prompt("Enter amount to fund:");
-    await fetch('/wallet/fund', {
+    await fetch('http://127.0.0.1:5000/wallet/fund', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ wallet_id: wallet.wallet_id, amount: parseFloat(amount) }),
@@ -28,7 +28,7 @@ export default function WalletCard({ userId }) {
 
   const handleWithdraw = async () => {
     const amount = prompt("Enter amount to withdraw:");
-    await fetch('/wallet/withdraw', {
+    await fetch('http://127.0.0.1:5000/wallet/withdraw', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ wallet_id: wallet.wallet_id, amount: parseFloat(amount) }),
