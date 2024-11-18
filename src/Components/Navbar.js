@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Login from "./LoginModal"; 
+import Login from "./LoginModal"; // Assuming this is the correct path
 import SignUpForm from "./SignUpModal";
 
 const Navbar = ({ isAuthenticated, username, handleLogout }) => {
@@ -15,7 +15,7 @@ const Navbar = ({ isAuthenticated, username, handleLogout }) => {
 
   // Define handleLogin here
   const handleLogin = (username) => {
-    setUser(username); 
+    setUser(username); // Or any state update you want to handle the user login
   };
 
   return (
