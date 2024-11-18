@@ -20,7 +20,7 @@ const Login = ({ handleLogin, onClose, openSignUpModal }) => {
     onSubmit: async (values) => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:5000/login", {
+        const response = await fetch("http://127.0.0.1:5000/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(values),
@@ -30,9 +30,10 @@ const Login = ({ handleLogin, onClose, openSignUpModal }) => {
         if (response.ok) {
           Cookies.set("token", data.token);
           Cookies.set("username", data.username);
-          handleLogin(data.username);
-          navigate("/dashboard");
+          console.log("Navigating to dashboard...")
           formik.resetForm();
+          navigate("/dashboard");
+          window.location.reload();
           if (onClose) onClose();
         } else {
           alert(data.message || "Invalid username or password");

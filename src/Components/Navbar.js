@@ -16,9 +16,9 @@ const Navbar = ({ isAuthenticated, username, handleLogout }) => {
     <>
       <nav className="bg-blue-50 border-b border-blue-200 py-3">
         <div className="container mx-auto flex justify-between items-center px-4">
-          <a href="/" className="text-xl font-bold text-blue-600">
-            Money Transfer App
-          </a>
+        <div className="logo">
+            <a href="/">VisaPay</a>
+          </div>
           <div className="flex space-x-4">
             {isAuthenticated ? (
               <>
