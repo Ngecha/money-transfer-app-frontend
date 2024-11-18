@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const SignUpForm = ({ onClose, onOpenLogin }) => {
+const SignUpForm = ({ onClose, openLoginModal }) => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -25,7 +25,7 @@ const SignUpForm = ({ onClose, onOpenLogin }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/users", {
+      const response = await fetch("http://localhost:5000/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -55,22 +55,13 @@ const SignUpForm = ({ onClose, onOpenLogin }) => {
       aria-labelledby="signup-modal"
       aria-modal="true"
     >
-      {/* Close Button */}
-      <button
-        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none"
-        onClick={onClose}
-        aria-label="Close signup form"
-      >
-        ×
-      </button>
-
       {/* Header */}
       <h2 id="signup-modal" className="text-2xl font-bold text-center mb-4">
         Sign Up
       </h2>
 
       {/* Success/Error Messages */}
-      {successMessage && <p className="text-green-500 text-sm mb-4">{successMessage}</p>}
+      {successMessage && <p className="text-blue-500 text-sm mb-4">{successMessage}</p>}
       {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
       {/* Form */}
@@ -159,10 +150,7 @@ const SignUpForm = ({ onClose, onOpenLogin }) => {
           Already have an account?{" "}
           <button
             className="text-blue-600 hover:underline"
-            onClick={() => {
-              if (onClose) onClose(); // Close signup modal
-              if (onOpenLogin) onOpenLogin(); // Open login modal
-            }}
+            onClick={openLoginModal}
           >
             Log in
           </button>

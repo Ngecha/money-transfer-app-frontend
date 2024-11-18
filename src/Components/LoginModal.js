@@ -3,9 +3,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-//import SignUpForm from "./SignUpModal";
 
-const Login = ({ handleLogin, onClose, onOpenSignup }) => {
+const Login = ({ handleLogin, onClose, openSignUpModal }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -120,12 +119,9 @@ const Login = ({ handleLogin, onClose, onOpenSignup }) => {
           Don't have an account?{" "}
           <button
             className="text-blue-600 hover:underline"
-            onClick={() => {
-              if (onClose) onClose(); 
-              if (onOpenSignup) onOpenSignup(); // Open signup modal
-            }}
+            onClick={openSignUpModal}
           >
-            signup
+            Sign up
           </button>
         </p>
       </div>

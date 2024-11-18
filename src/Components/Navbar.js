@@ -1,11 +1,16 @@
 import React, { useState } from "react";
-//import { Link } from "react-router-dom";
 import Login from "./LoginModal";
 import SignUpForm from "./SignUpModal";
 
-const Navbar = ({ isAuthenticated, username, handleLogout,handleLogin }) => {
+const Navbar = ({ isAuthenticated, username, handleLogout }) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+
+  const openLoginModal = () => setIsLoginModalOpen(true);
+  const openSignUpModal = () => setIsSignupModalOpen(true);
+
+  const closeLoginModal = () => setIsLoginModalOpen(false);
+  const closeSignUpModal = () => setIsSignupModalOpen(false);
 
   return (
     <>
@@ -29,13 +34,13 @@ const Navbar = ({ isAuthenticated, username, handleLogout,handleLogin }) => {
               <>
                 <button
                   className="text-blue-600 hover:text-blue-800 font-medium"
-                  onClick={() => setIsLoginModalOpen(true)}
+                  onClick={openLoginModal}
                 >
                   Login
                 </button>
                 <button
                   className="text-blue-600 hover:text-blue-800 font-medium"
-                  onClick={() => setIsSignupModalOpen(true)}
+                  onClick={openSignUpModal}
                 >
                   Sign Up
                 </button>
@@ -45,12 +50,17 @@ const Navbar = ({ isAuthenticated, username, handleLogout,handleLogin }) => {
         </div>
       </nav>
 
+      {/* Login Modal */}
       {isLoginModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <Login onClose={() => setIsLoginModalOpen(false)} />
+          <Login
+            onClose={closeLoginModal}
+            onOpenSignUp={openSignUpModal} // Ensure this prop is correctly passed
+          />
         </div>
       )}
 
+      {/* Sign Up Modal */}
       {isSignupModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div
@@ -59,11 +69,11 @@ const Navbar = ({ isAuthenticated, username, handleLogout,handleLogin }) => {
           >
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none"
-              onClick={() => setIsSignupModalOpen(false)}
+              onClick={closeSignUpModal}
             >
               ×
             </button>
-            <SignUpForm />
+            <SignUpForm onClose={closeSignUpModal} onOpenLogin={openLoginModal} />
           </div>
         </div>
       )}
