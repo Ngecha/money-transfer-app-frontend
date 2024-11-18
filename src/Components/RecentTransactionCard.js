@@ -61,6 +61,7 @@ const RecentTransactions = () => {
     fetchTransactions();
   }, [user]);
 
+
   return (
     <div className="w-full bg-white shadow-md rounded-lg p-4 overflow-y-auto max-h-96">
       <h2 className="text-lg font-semibold mb-4">Recent Transactions</h2>
