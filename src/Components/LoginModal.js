@@ -27,9 +27,12 @@ const Login = ({ handleLogin, onClose, openSignUpModal }) => {
         });
 
         const data = await response.json();
+
         if (response.ok) {
+          // Set cookies
           Cookies.set("token", data.token);
           Cookies.set("username", data.username);
+
           console.log("Navigating to dashboard...")
           formik.resetForm();
           navigate("/dashboard");
@@ -120,7 +123,10 @@ const Login = ({ handleLogin, onClose, openSignUpModal }) => {
           Don't have an account?{" "}
           <button
             className="text-blue-600 hover:underline"
-            onClick={openSignUpModal}
+            onClick={() => {
+              onClose(); 
+              openSignUpModal(); 
+            }}
           >
             Sign up
           </button>
