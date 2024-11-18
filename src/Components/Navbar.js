@@ -62,7 +62,7 @@ const Navbar = ({ isAuthenticated, username, handleLogout }) => {
           <Login
             onClose={closeLoginModal}
             openSignUpModal={openSignUpModal}
-            handleLogin={handleLogin} // Make sure this is passed
+            handleLogin={handleLogin} 
           />
         </div>
       )}
