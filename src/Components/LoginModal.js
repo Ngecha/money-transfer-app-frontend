@@ -29,12 +29,11 @@ const Login = ({ handleLogin, onClose, openSignUpModal }) => {
         const data = await response.json();
 
         if (response.ok) {
-          // Set cookies for token, username, and userId
+          // Set cookies
           Cookies.set("token", data.token);
           Cookies.set("username", data.username);
-          Cookies.set("userId", data.user_id); // Store userId for later use
 
-          console.log("Navigating to dashboard...");
+          console.log("Navigating to dashboard...")
           formik.resetForm();
           navigate("/dashboard");
           window.location.reload();
