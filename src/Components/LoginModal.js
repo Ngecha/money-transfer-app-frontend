@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Cookies from "js-cookie";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 const Login = ({ handleLogin, onClose, openSignUpModal }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -27,13 +28,22 @@ const Login = ({ handleLogin, onClose, openSignUpModal }) => {
         });
 
         const data = await response.json();
+
         if (response.ok) {
           Cookies.set("token", data.token);
           Cookies.set("username", data.username);
-          handleLogin(data.username);
-          navigate("/dashboard");
+          Cookies.set("user_id", data.user_id);
+          
+          // Set logged-in state
+          handleLogin(data.username); 
+          setIsLoggedIn(true);
+
+          // Optionally show a success message
+          alert("Login successful!");
+
+          // Reset form and close modal
           formik.resetForm();
-          if (onClose) onClose();
+          onClose();
         } else {
           alert(data.message || "Invalid username or password");
         }
@@ -44,6 +54,12 @@ const Login = ({ handleLogin, onClose, openSignUpModal }) => {
       }
     },
   });
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/dashboard"); 
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <div
@@ -119,7 +135,10 @@ const Login = ({ handleLogin, onClose, openSignUpModal }) => {
           Don't have an account?{" "}
           <button
             className="text-blue-600 hover:underline"
-            onClick={openSignUpModal}
+            onClick={() => {
+              onClose(); 
+              openSignUpModal(); 
+            }}
           >
             Sign up
           </button>

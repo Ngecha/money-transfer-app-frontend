@@ -1,16 +1,22 @@
 import React, { useState } from "react";
-import Login from "./LoginModal";
+import Login from "./LoginModal"; // Assuming this is the correct path
 import SignUpForm from "./SignUpModal";
 
 const Navbar = ({ isAuthenticated, username, handleLogout }) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [user, setUser] = useState(null);
 
   const openLoginModal = () => setIsLoginModalOpen(true);
   const openSignUpModal = () => setIsSignupModalOpen(true);
 
   const closeLoginModal = () => setIsLoginModalOpen(false);
   const closeSignUpModal = () => setIsSignupModalOpen(false);
+
+  // Define handleLogin here
+  const handleLogin = (username) => {
+    setUser(username); // Or any state update you want to handle the user login
+  };
 
   return (
     <>
@@ -55,7 +61,8 @@ const Navbar = ({ isAuthenticated, username, handleLogout }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <Login
             onClose={closeLoginModal}
-            onOpenSignUp={openSignUpModal} // Ensure this prop is correctly passed
+            openSignUpModal={openSignUpModal}
+            handleLogin={handleLogin} // Make sure this is passed
           />
         </div>
       )}

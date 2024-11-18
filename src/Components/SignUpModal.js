@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { Navigate } from "react-router-dom";
+import Login from "./LoginModal";
 
 const SignUpForm = ({ onClose, openLoginModal }) => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
-    phoneNumber: "",
+    phone_number: "",
     password: "",
     confirmPassword: "",
   });
@@ -16,37 +18,56 @@ const SignUpForm = ({ onClose, openLoginModal }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const validateForm = () => {
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.phone_number ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
+      setError("All fields are required.");
+      return false;
+    }
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
-      return;
+      return false;
     }
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return false;
+    }
+    return true;
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccessMessage("");
+  
+    if (!validateForm()) return;
+  
     try {
       const response = await fetch("http://localhost:5000/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
+  
+      const responseData = await response.json();
+  
       if (response.ok) {
-        setSuccessMessage("Sign Up Successful! You can now log in.");
-        setFormData({
-          username: "",
-          email: "",
-          phoneNumber: "",
-          password: "",
-          confirmPassword: "",
-        });
+        setSuccessMessage(responseData.message || "Sign Up Successful! You can now log in.");
+        onClose();
+        openLoginModal(); 
       } else {
-        setError("Failed to sign up. Try again.");
+        setError(responseData.message || "Failed to sign up. Try again.");
       }
     } catch (err) {
-      setError("Network error. Try again.");
+      setError("Network error. Please try again.");
     }
   };
+  
 
   return (
     <div
@@ -61,11 +82,19 @@ const SignUpForm = ({ onClose, openLoginModal }) => {
       </h2>
 
       {/* Success/Error Messages */}
-      {successMessage && <p className="text-blue-500 text-sm mb-4">{successMessage}</p>}
-      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+      {successMessage && (
+        <p className="text-blue-500 text-sm mb-4" aria-live="polite">
+          {successMessage}
+        </p>
+      )}
+      {error && (
+        <p className="text-red-500 text-sm mb-4" aria-live="assertive">
+          {error}
+        </p>
+      )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" >
         <div>
           <label htmlFor="username" className="block text-sm font-medium text-gray-700">
             Username:
@@ -77,6 +106,7 @@ const SignUpForm = ({ onClose, openLoginModal }) => {
             value={formData.username}
             onChange={handleInputChange}
             className="mt-1 block w-full px-3 py-2 border rounded-lg"
+            required
           />
         </div>
 
@@ -91,20 +121,22 @@ const SignUpForm = ({ onClose, openLoginModal }) => {
             value={formData.email}
             onChange={handleInputChange}
             className="mt-1 block w-full px-3 py-2 border rounded-lg"
+            required
           />
         </div>
 
         <div>
-          <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700">
             Phone Number:
           </label>
           <input
             type="text"
-            id="phoneNumber"
-            name="phoneNumber"
-            value={formData.phoneNumber}
+            id="phone_number"
+            name="phone_number"
+            value={formData.phone_number}
             onChange={handleInputChange}
             className="mt-1 block w-full px-3 py-2 border rounded-lg"
+            required
           />
         </div>
 
@@ -119,6 +151,7 @@ const SignUpForm = ({ onClose, openLoginModal }) => {
             value={formData.password}
             onChange={handleInputChange}
             className="mt-1 block w-full px-3 py-2 border rounded-lg"
+            required
           />
         </div>
 
@@ -133,6 +166,7 @@ const SignUpForm = ({ onClose, openLoginModal }) => {
             value={formData.confirmPassword}
             onChange={handleInputChange}
             className="mt-1 block w-full px-3 py-2 border rounded-lg"
+            required
           />
         </div>
 
@@ -148,10 +182,11 @@ const SignUpForm = ({ onClose, openLoginModal }) => {
       <div className="mt-4 text-center">
         <p className="text-sm text-gray-600">
           Already have an account?{" "}
-          <button
-            className="text-blue-600 hover:underline"
-            onClick={openLoginModal}
-          >
+          <button className="text-blue-600 hover:underline"
+            onClick={() => {
+            onClose(); 
+            openLoginModal(); 
+            }}>
             Log in
           </button>
         </p>
