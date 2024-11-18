@@ -131,7 +131,7 @@ export default function WalletCard() {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/wallet/create', {
+      const response = await fetch('http://127.0.0.1:5000/wallet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: user.user_id, wallet_name: walletName }),
