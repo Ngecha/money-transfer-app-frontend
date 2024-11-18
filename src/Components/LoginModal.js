@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Cookies from "js-cookie";
@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 const Login = ({ handleLogin, onClose, openSignUpModal }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -30,13 +29,13 @@ const Login = ({ handleLogin, onClose, openSignUpModal }) => {
         const data = await response.json();
 
         if (response.ok) {
+          // Set cookies
           Cookies.set("token", data.token);
           Cookies.set("username", data.username);
           Cookies.set("user_id", data.user_id);
-          
-          // Set logged-in state
-          handleLogin(data.username); 
-          setIsLoggedIn(true);
+
+          // Call handleLogin to update state
+          handleLogin(data.username);
 
           // Optionally show a success message
           alert("Login successful!");
@@ -44,6 +43,9 @@ const Login = ({ handleLogin, onClose, openSignUpModal }) => {
           // Reset form and close modal
           formik.resetForm();
           onClose();
+
+          // Navigate to dashboard immediately after login
+          navigate("/dashboard");
         } else {
           alert(data.message || "Invalid username or password");
         }
@@ -54,12 +56,6 @@ const Login = ({ handleLogin, onClose, openSignUpModal }) => {
       }
     },
   });
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate("/dashboard"); 
-    }
-  }, [isLoggedIn, navigate]);
 
   return (
     <div

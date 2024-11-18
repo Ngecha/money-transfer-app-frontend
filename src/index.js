@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import LandingPage from "./Pages/LandingPage";
-import DashboardPage from "./Pages/Dashboard";
+import DashboardPage from "./Pages/DashboardPage";
 import Beneficiaries from "./Pages/Beneficiaries";
 
 const router = createBrowserRouter([
