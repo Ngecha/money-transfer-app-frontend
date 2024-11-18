@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
     username: '',
+    email:'',
+    phone_number:'',
     password: '',
     confirmPassword: ''
   });
@@ -24,7 +26,7 @@ const SignUpForm = () => {
 
   const validateForm = () => {
     if (!formData.username || !formData.password) {
-      setError('Both username and password are required.');
+      setError('Both username ,password and phone number are required.');
       return false;
     }
     if (formData.password.length < 6) {
@@ -47,7 +49,7 @@ const SignUpForm = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5555/users', {
+      const response = await fetch('http://localhost:5000/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -57,7 +59,7 @@ const SignUpForm = () => {
 
       if (response.ok) {
         setSuccess('User signed up successfully!');
-        setFormData({ username: '', password: '', confirmPassword: '' });
+        setFormData({ username: '', email:'', phone_number:'', password: '', confirmPassword: '' });
         navigate('/Login')
       } else if (response.status === 409) {
         setError('Username already taken. Please try a different one.');
@@ -85,6 +87,31 @@ const SignUpForm = () => {
           required
         />
       </div>
+
+      <div className='input-group'>
+        <label htmlFor="username">Email:</label>
+        <input
+          type="text"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
+
+      <div className='input-group'>
+        <label htmlFor="username">Phone Number</label>
+        <input
+          type="text"
+          id="phone_number"
+          name="phone_number"
+          value={formData.phone_number}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
+
       <div className='input-group'>
         <label htmlFor="password">Password:</label>
         <input
