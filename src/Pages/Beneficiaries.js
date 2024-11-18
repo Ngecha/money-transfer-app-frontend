@@ -68,8 +68,8 @@ const Beneficiaries = () => {
     const addBeneficiary = async () => {
         try {
             const newBeneficiary = {
-                user_id: user.user_id, // assuming the user_id is required for the new beneficiary
-                beneficiary_email: prompt("Enter beneficiary email") // example email
+                user_id: user.user_id, 
+                beneficiary_email: prompt("Enter beneficiary email") 
             };
 
             const response = await fetch(`http://127.0.0.1:5000/beneficiary`, {
@@ -146,8 +146,8 @@ const Beneficiaries = () => {
                     <tbody>
                         {beneficiaries.map((beneficiary, index) => (
                             <tr key={index} className="hover:bg-gray-50">
-                                <td className="px-4 py-2">{new Date(beneficiary.added_at).toLocaleString()}</td> {/* Format date */}
-                                <td className="px-4 py-2">{beneficiary.beneficiary_email}</td> {/* Display email */}
+                                <td className="px-4 py-2">{new Date(beneficiary.added_at).toLocaleString()}</td> 
+                                <td className="px-4 py-2">{beneficiary.beneficiary_email}</td> 
                                 <td className="px-4 py-2">
                                     {beneficiary.is_active ? (
                                         <span className="text-green-500">Active</span>
@@ -160,8 +160,8 @@ const Beneficiaries = () => {
                                         className="text-red-500 hover:text-red-700 font-bold"
                                         onClick={() => removeBeneficiary(beneficiary.beneficiary_id)}
                                     >
-                                        X {/* Remove button */}
-                                    </button>
+                                        X 
+                                </button>
                                 </td>
                             </tr>
                         ))}
