@@ -1,12 +1,47 @@
 // WalletCard.js
 import React, { useState, useEffect } from 'react';
+import Cookies from "js-cookie";
 
 export default function WalletCard({ userId }) {
   const [wallet, setWallet] = useState({ wallet_name: '', balance: 0 });
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const username = Cookies.get("username");
+      if (!username) {
+        setError("User is not logged in.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/users`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch users.");
+        }
+
+        const data = await response.json();
+        const users = data.users;
+        const loggedInUser = users.find((u) => u.username === username);
+
+        if (!loggedInUser) {
+          throw new Error("Logged-in user not found.");
+        }
+
+        setUser(loggedInUser);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setError(error.message);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const fetchWallet = async () => {
-      const response = await fetch(`http://127.0.0.1:5000/wallet/3`);
+      const response = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
       const data = await response.json();
       if (data.wallets && data.wallets.length > 0) {
         setWallet(data.wallets[0]); // Assuming one wallet per user

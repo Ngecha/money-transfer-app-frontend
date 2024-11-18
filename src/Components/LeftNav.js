@@ -3,26 +3,25 @@ import { NavLink } from 'react-router-dom';
 
 export default function LeftNav() {
   return (
-    <nav className="w-64 text-black h-screen bg-gray-90 shadow-lg p-6 space-y-6">
-      <ul className="space-y-4">
-        <li>
-        </li>
+    <nav className="w-48 text-black h-screen bg-gray-90 shadow-lg p-4 space-y-6">
+      <ul className="space-y-6">
         <li>
           <NavLink
             to="/dashboard"
             className={({ isActive }) =>
-              `block py-3 px-5 rounded-lg transition-transform transform duration-300 ease-in-out
+              `block py-3 px-4 rounded-lg transition-transform transform duration-300 ease-in-out
                ${isActive ? 'bg-blue-700 text-white' : 'bg-white hover:bg-blue-100'} 
                shadow-md hover:scale-105`
             }
           >
             Dashboard
           </NavLink>
-
+        </li>
+        <li>
           <NavLink
-            to="/beneficaries"
+            to="/beneficiaries"
             className={({ isActive }) =>
-              `block py-3 px-5 rounded-lg transition-transform transform duration-300 ease-in-out
+              `block py-3 px-4 rounded-lg transition-transform transform duration-300 ease-in-out
                ${isActive ? 'bg-blue-700 text-white' : 'bg-white hover:bg-blue-100'} 
                shadow-md hover:scale-105`
             }
