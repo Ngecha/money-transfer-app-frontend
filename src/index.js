@@ -6,6 +6,7 @@ import LandingPage from "./Pages/LandingPage";
 import DashboardPage from "./Pages/DashboardPage";
 import Beneficiaries from "./Pages/Beneficiaries";
 import TransactionPage from "./Pages/TransactionPage";
+import Wallet from "./Pages/Wallet";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
       { path: "/dashboard", element: <DashboardPage /> },
       { path: "/beneficiaries", element: <Beneficiaries /> },
       { path: "/transactions", element: <TransactionPage /> },
+      { path: "/wallet",  element: <Wallet />}
 
     ],
   },
