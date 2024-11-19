@@ -63,7 +63,7 @@ const RecentTransactions = () => {
 
 
   return (
-    <div className="w-full bg-white shadow-md rounded-lg p-4 overflow-y-auto max-h-96">
+    <div className="w-96 h-96 overflow-y-auto bg-white shadow-md rounded-lg p-4 overflow-y-auto max-h-96">
       <h2 className="text-lg font-semibold mb-4">Recent Transactions</h2>
       {error && <p className="text-red-500">{error}</p>}
       <table className="table-auto w-full border-collapse">
