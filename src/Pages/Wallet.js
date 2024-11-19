@@ -96,9 +96,9 @@ function Wallet() {
           amount: parseFloat(amount),
         })
       });
-  
+
       if (!response.ok) throw new Error("Failed to top up.");
-  
+
       const updatedWallet = await response.json();
       setWallets((prev) =>
         prev.map((wallet) =>
@@ -112,7 +112,6 @@ function Wallet() {
       setError(error.message);
     }
   };
-  
 
   // Transfer functionality
   const handleTransfer = async () => {
@@ -222,7 +221,7 @@ function Wallet() {
         )}
 
         {/* Wallet Details */}
-        {selectedWallet && (
+        {selectedWallet && !showTopUpForm && !showTransferForm && !showWithdrawForm && (
           <div className="card p-4 mx-auto" style={{ maxWidth: "25rem", backgroundColor: "#f0f8ff", borderRadius: "12px", boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)" }}>
             <h5 className="text-center mb-3 text-primary">{selectedWallet.wallet_name || "Unnamed Wallet"}</h5>
 
@@ -238,43 +237,75 @@ function Wallet() {
               <button type="button" className="btn rounded-pill flex-grow-1" onClick={handleTransferClick} style={{ backgroundColor: "#1c1c1c", color: "white" }}>Transfer</button>
               <button type="button" className="btn rounded-pill flex-grow-1" onClick={handleWithdrawClick} style={{ backgroundColor: "#be0000", color: "white" }}>Withdraw</button>
             </div>
-            <button type="button" className="btn btn-outline-secondary w-100" onClick={handleBackClick}>Back to Wallets</button>
           </div>
         )}
 
-        {/* Top-Up Form */}
+        {/* Top Up Form */}
         {showTopUpForm && (
-          <div className="card p-4 mx-auto" style={{ maxWidth: "25rem", backgroundColor: "#f0f8ff", borderRadius: "12px", boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)" }}>
-            <h5 className="text-center mb-3 text-primary">Top-Up Amount</h5>
-            <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="form-control mb-3" placeholder="Enter amount" />
-            <button onClick={handleTopUp} className="btn btn-primary w-100">Submit</button>
-            <button onClick={() => setShowTopUpForm(false)} className="btn btn-outline-secondary w-100 mt-3">Cancel</button>
+          <div className="modal show" style={{ display: "block" }}>
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Top Up</h5>
+                  <button type="button" className="btn-close" onClick={handleBackClick}></button>
+                </div>
+                <div className="modal-body">
+                  <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="form-control mb-3" placeholder="Enter amount" />
+                </div>
+                <div className="modal-footer">
+                  <button onClick={handleTopUp} className="btn btn-primary">Submit</button>
+                  <button onClick={handleBackClick} className="btn btn-secondary">Back to Account</button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
         {/* Transfer Form */}
         {showTransferForm && (
-          <div className="card p-4 mx-auto" style={{ maxWidth: "25rem", backgroundColor: "#f0f8ff", borderRadius: "12px", boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)" }}>
-            <h5 className="text-center mb-3 text-primary">Transfer</h5>
-            <select onChange={(e) => setSelectedBeneficiary(e.target.value)} className="form-select mb-3">
-              <option value="">Select beneficiary</option>
-              {beneficiaries.map((b) => (
-                <option key={b.wallet_id} value={b.wallet_id}>{b.wallet_name}</option>
-              ))}
-            </select>
-            <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="form-control mb-3" placeholder="Enter amount" />
-            <button onClick={handleTransfer} className="btn btn-primary w-100">Transfer</button>
-            <button onClick={() => setShowTransferForm(false)} className="btn btn-outline-secondary w-100 mt-3">Cancel</button>
+          <div className="modal show" style={{ display: "block" }}>
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Transfer</h5>
+                  <button type="button" className="btn-close" onClick={handleBackClick}></button>
+                </div>
+                <div className="modal-body">
+                  <select onChange={(e) => setSelectedBeneficiary(e.target.value)} className="form-select mb-3">
+                    <option value="">Select beneficiary</option>
+                    {beneficiaries.map((b) => (
+                      <option key={b.wallet_id} value={b.wallet_id}>{b.wallet_name}</option>
+                    ))}
+                  </select>
+                  <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="form-control mb-3" placeholder="Enter amount" />
+                </div>
+                <div className="modal-footer">
+                  <button onClick={handleTransfer} className="btn btn-primary">Transfer</button>
+                  <button onClick={handleBackClick} className="btn btn-secondary">Back to Account</button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
         {/* Withdraw Form */}
         {showWithdrawForm && (
-          <div className="card p-4 mx-auto" style={{ maxWidth: "25rem", backgroundColor: "#f0f8ff", borderRadius: "12px", boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)" }}>
-            <h5 className="text-center mb-3 text-primary">Withdraw</h5>
-            <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="form-control mb-3" placeholder="Enter amount" />
-            <button onClick={handleWithdraw} className="btn btn-primary w-100">Withdraw</button>
-            <button onClick={() => setShowWithdrawForm(false)} className="btn btn-outline-secondary w-100 mt-3">Cancel</button>
+          <div className="modal show" style={{ display: "block" }}>
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Withdraw</h5>
+                  <button type="button" className="btn-close" onClick={handleBackClick}></button>
+                </div>
+                <div className="modal-body">
+                  <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="form-control mb-3" placeholder="Enter amount" />
+                </div>
+                <div className="modal-footer">
+                  <button onClick={handleWithdraw} className="btn btn-primary">Withdraw</button>
+                  <button onClick={handleBackClick} className="btn btn-secondary">Back to Account</button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
