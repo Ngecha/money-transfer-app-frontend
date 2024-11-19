@@ -1,104 +1,186 @@
-// Install dependencies first: npm install react-chartjs-2 chart.js
-
-import React from "react";
-import { Bar, Line } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
+import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 import LeftNav from "../Components/LeftNav";
+import { Bar } from "react-chartjs-2"; // Chart.js for analytics
+import {  Chart as ChartJS,  CategoryScale,  LinearScale,  BarElement,  Title,  Tooltip,  Legend,} from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const TransactionsPage = () => {
-  // Sample data for transactions
-  const transactions = [
-    { id: 1, date: "2024-11-01", description: "Salary", amount: 5000, type: "in" },
-    { id: 2, date: "2024-11-03", description: "Groceries", amount: -200, type: "out" },
-    { id: 3, date: "2024-11-05", description: "Freelance", amount: 1500, type: "in" },
-    { id: 4, date: "2024-11-10", description: "Rent", amount: -1500, type: "out" },
-    { id: 5, date: "2024-11-15", description: "Utilities", amount: -300, type: "out" },
-  ];
+export default function Transactions() {
+  const [error, setError] = useState("");
+  const [user, setUser] = useState(null);
+  const [transactions, setTransactions] = useState([]);
+  const [summary, setSummary] = useState({
+    totalTransactions: 0,
+    totalAmount: 0,
+    totalFees: 0,
+  });
 
-  // Calculate data for graphs
-  const moneyIn = transactions.filter((t) => t.type === "in").reduce((acc, t) => acc + t.amount, 0);
-  const moneyOut = transactions.filter((t) => t.type === "out").reduce((acc, t) => acc + Math.abs(t.amount), 0);
+  // Fetch logged-in user from cookies
+  useEffect(() => {
+    const fetchUser = async () => {
+      const username = Cookies.get("username"); // Get username from cookie
+      if (!username) {
+        setError("User is not logged in.");
+        return;
+      }
 
-  const barData = {
-    labels: ["Money In", "Money Out"],
+      try {
+        const response = await fetch("http://127.0.0.1:5000/users");
+        if (!response.ok) {
+          throw new Error("Failed to fetch users.");
+        }
+
+        const data = await response.json();
+        const users = data.users;
+        const loggedInUser = users.find((u) => u.username === username);
+
+        if (!loggedInUser) {
+          throw new Error("Logged-in user not found.");
+        }
+
+        setUser(loggedInUser);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setError(error.message);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  // Fetch transactions and summary for the logged-in user
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      if (user) {
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:5000/transactions/${user.user_id}`
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch transactions.");
+          }
+
+          const data = await response.json();
+          setTransactions(data);
+
+          // Calculate summary
+          const totalTransactions = data.length;
+          const totalAmount = data.reduce((sum, t) => sum + t.amount, 0);
+          const totalFees = data.reduce((sum, t) => sum + (t.transaction_fee || 0), 0);
+
+          setSummary({
+            totalTransactions,
+            totalAmount,
+            totalFees,
+          });
+        } catch (err) {
+          console.error("Error fetching transactions:", err);
+          setError("Failed to load transactions.");
+        }
+      }
+    };
+
+    fetchTransactions();
+  }, [user]);
+
+  // Data for the analytics graph
+  const analyticsData = {
+    labels: transactions.map((t) => new Date(t.transaction_date).toLocaleDateString()),
     datasets: [
       {
-        label: "Amount",
-        data: [moneyIn, moneyOut],
-        backgroundColor: ["#4caf50", "#f44336"],
-      },
-    ],
-  };
-
-  const lineData = {
-    labels: transactions.map((t) => t.date),
-    datasets: [
-      {
-        label: "Money In",
-        data: transactions.map((t) => (t.type === "in" ? t.amount : 0)),
-        borderColor: "#4caf50",
-        backgroundColor: "rgba(76, 175, 80, 0.2)",
-        tension: 0.4,
-      },
-      {
-        label: "Money Out",
-        data: transactions.map((t) => (t.type === "out" ? Math.abs(t.amount) : 0)),
-        borderColor: "#f44336",
-        backgroundColor: "rgba(244, 67, 54, 0.2)",
-        tension: 0.4,
+        label: "Transaction Amount",
+        data: transactions.map((t) => t.amount),
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
       },
     ],
   };
 
   return (
     <div className="flex">
-      <LeftNav/>
-      <div className=" container mx-auto py-6">
-        
-        <h1 className="text-2xl font-bold mb-4">Transactions</h1>
+      <LeftNav />
+      <div className="p-6 bg-gray-50 min-h-screen w-full">
+        <h1 className="text-2xl font-bold mb-4">My Transactions</h1>
+        {error && <div className="text-red-500 mb-4">{error}</div>}
+        {!user ? (
+          <p>Loading user details...</p>
+        ) : (
+          <>
+            {/* Summary Section */}
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="p-4 bg-white shadow-md rounded-lg text-center">
+                <h2 className="text-xl font-semibold">Total Transactions</h2>
+                <p className="text-2xl">{summary.totalTransactions}</p>
+              </div>
+              <div className="p-4 bg-white shadow-md rounded-lg text-center">
+                <h2 className="text-xl font-semibold">Total Amount</h2>
+                <p className="text-2xl">${summary.totalAmount.toFixed(2)}</p>
+              </div>
+              <div className="p-4 bg-white shadow-md rounded-lg text-center">
+                <h2 className="text-xl font-semibold">Total Fees</h2>
+                <p className="text-2xl">${summary.totalFees.toFixed(2)}</p>
+              </div>
+            </div>
 
-        {/* Transactions Table */}
-        <table className="table-auto w-full border-collapse border border-gray-200 mb-6">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 px-4 py-2">Date</th>
-              <th className="border border-gray-300 px-4 py-2">Description</th>
-              <th className="border border-gray-300 px-4 py-2">Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.map((transaction) => (
-              <tr key={transaction.id}>
-                <td className="border border-gray-300 px-4 py-2">{transaction.date}</td>
-                <td className="border border-gray-300 px-4 py-2">{transaction.description}</td>
-                <td
-                  className={`border border-gray-300 px-4 py-2 ${
-                    transaction.type === "in" ? "text-green-500" : "text-red-500"
-                  }`}
-                >
-                  {transaction.amount > 0 ? `+${transaction.amount}` : transaction.amount}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            {/* Transaction History Table */}
+            <div className="border border-gray-300 rounded-lg p-4 shadow-md bg-white mb-6">
+              <h2 className="text-lg font-semibold mb-4">Transaction History</h2>
+              {transactions.length === 0 ? (
+                <p>No transactions found.</p>
+              ) : (
+                <div className="overflow-auto">
+                  <table className="min-w-full border-collapse border border-gray-200">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="border border-gray-200 px-4 py-2 text-left">Date</th>
+                        <th className="border border-gray-200 px-4 py-2 text-left">
+                          Transaction Type
+                        </th>
+                        <th className="border border-gray-200 px-4 py-2 text-left">Recipient</th>
+                        <th className="border border-gray-200 px-4 py-2 text-left">Amount</th>
+                        <th className="border border-gray-200 px-4 py-2 text-left">
+                          Balance After Transaction
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {transactions.map((transaction) => (
+                        <tr key={transaction.transaction_id} className="hover:bg-gray-50">
+                          <td className="border border-gray-200 px-4 py-2">
+                            {new Date(transaction.transaction_date).toLocaleDateString()}
+                          </td>
+                          <td className="border border-gray-200 px-4 py-2">
+                            {transaction.sender_wallet_id === user.wallet.wallet_id
+                              ? "Money Out"
+                              : "Money In"}
+                          </td>
+                          <td className="border border-gray-200 px-4 py-2">
+                            {transaction.recipient_email || "N/A"}
+                          </td>
+                          <td className="border border-gray-200 px-4 py-2">
+                            ${transaction.amount.toFixed(2)}
+                          </td>
+                          <td className="border border-gray-200 px-4 py-2">
+                            ${transaction.balance_after_transaction?.toFixed(2) || "N/A"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
 
-        {/* Bar Chart */}
-        <div className="mb-6">
-          <h2 className="text-xl font-bold mb-2">Money In vs Money Out</h2>
-          <Bar data={barData} />
-        </div>
-
-        {/* Line Chart */}
-        <div>
-          <h2 className="text-xl font-bold mb-2">Money Trends Over Time</h2>
-          <Line data={lineData} />
-        </div>
+            {/* Analytics Section */}
+            <div className="border border-gray-300 rounded-lg p-4 shadow-md bg-white">
+              <h2 className="text-lg font-semibold mb-4">Transaction Analytics</h2>
+              <Bar data={analyticsData} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
-};
-
-export default TransactionsPage;
+}
