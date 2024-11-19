@@ -19,7 +19,7 @@ const LandingPage = () => {
         console.error("Failed to load image:", img.src);
         img.style.background = "#ff000033";
         img.style.padding = "1rem";
-        img.style.border = "2px solid red";
+        // img.style.border = "2px solid red";
       };
       img.onload = function () {
         console.log("Successfully loaded image:", img.src);
@@ -100,30 +100,9 @@ const LandingPage = () => {
         <div className="container hero-content">
           <h1 data-aos="fade-up">Send Money Globally With Confidence</h1>
           <p className="hero-subtitle" data-aos="fade-up" data-aos-delay="300">
-            Fast, secure, and affordable international money transfers to over
-            100+ countries.
+            Fast, secure, and affordable international money transfers.
           </p>
-          <div className="hero-features">
-            <div className="feature" data-aos="zoom-in">
-              <img
-                src="https://via.placeholder.com/64"
-                alt="Quick Transfers"
-              />
-              <span>Quick Transfers</span>
-            </div>
-            <div className="feature" data-aos="zoom-in">
-              <img
-                src="https://via.placeholder.com/64"
-                alt="Bank-Level Security"
-              />
-              <span>Bank-Level Security</span>
-            </div>
-            <div className="feature" data-aos="zoom-in">
-              <img src="https://via.placeholder.com/64" alt="Low Fees" />
-              <span>Low Fees</span>
-            </div>
           </div>
-        </div>
       </section>
 
       {/* Features Section */}
@@ -135,17 +114,17 @@ const LandingPage = () => {
           </p>
           <div className="features-grid">
             <div className="feature-card" data-aos="fade-up">
-              <img src="https://via.placeholder.com/64" alt="Lightning fast" />
+              <img src="/speed.png" alt="Lightning fast" />
               <h3>Lightning Fast</h3>
               <p>Transfer money within minutes to any supported country.</p>
             </div>
             <div className="feature-card" data-aos="fade-up" data-aos-delay="400">
-              <img src="public/security.png" alt="Highly secure" />
+              <img src="/security.png" alt="Highly secure" />
               <h3>Highly Secure</h3>
               <p>Bank-grade encryption and security for your peace of mind.</p>
             </div>
             <div className="feature-card" data-aos="fade-up" data-aos-delay="600">
-              <img src="public/low-fees.png" alt="Low fees" />
+              <img src="/low-fees.png" alt="Low fees" />
               <h3>Low Fees</h3>
               <p>Competitive rates and transparent fee structure.</p>
             </div>

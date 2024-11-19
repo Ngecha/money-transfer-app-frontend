@@ -28,14 +28,27 @@ const Navbar = ({ isAuthenticated, username, handleLogout }) => {
           <div className="flex space-x-4">
             {isAuthenticated ? (
               <>
-                <span className="text-gray-600">Welcome, {username}</span>
-                <button
-                  className="text-blue-600 hover:text-blue-800 font-medium"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </>
+  <div className="flex items-center space-x-3">
+    {/* Profile Image */}
+    <img 
+      src="/path-to-profile-image.jpg" 
+      alt="Profile" 
+      className="w-8 h-8 rounded-full object-cover" 
+    />
+
+    {/* Welcome Message */}
+    <span className="text-gray-600">Welcome, {username}</span>
+  </div>
+
+  {/* Logout Button */}
+  <button
+    className="text-blue-600 hover:text-blue-800 font-medium"
+    onClick={handleLogout}
+  >
+    Logout
+  </button>
+</>
+
             ) : (
               <>
                 <button

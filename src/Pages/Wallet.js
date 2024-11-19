@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import LeftNav from "../Components/LeftNav";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
+// import "@fortawesome/fontawesome-free/css/all.min.css";
 import Cookies from "js-cookie";
 import Walletccard from "../Pages/waletccard";
 
@@ -12,6 +12,8 @@ function Wallet() {
   const [showTransferForm, setShowTransferForm] = useState(false);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
+  const [fundAmount, setFundAmount] = useState('');
+  const [withdrawAmount, setWithdrawAmount] = useState('');
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -85,6 +87,68 @@ function Wallet() {
     setSelectedWallet(null);
     setShowTopUpForm(false);
     setShowTransferForm(false);
+  };
+
+  // Handle Fund Wallet
+  const handleFundSubmit = async () => {
+    if (!fundAmount || isNaN(fundAmount)) {
+      alert("Please enter a valid amount.");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/wallet/fund', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet_id: selectedWallet.wallet_id, amount: parseFloat(fundAmount) }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fund wallet.");
+      }
+
+      const updatedWallets = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
+      const updatedData = await updatedWallets.json();
+      setWallets(updatedData.wallets || []);
+      setShowTopUpForm(false); // Close top-up form after successful fund
+    } catch (err) {
+      console.error("Error during funding:", err);
+      alert("Failed to fund wallet. Please try again.");
+    }
+  };
+
+  // Handle Withdraw Wallet
+  const handleWithdrawSubmit = async () => {
+    if (!withdrawAmount || isNaN(withdrawAmount)) {
+      alert("Please enter a valid amount.");
+      return;
+    }
+
+    const wallet = wallets.find((w) => w.wallet_id === selectedWallet.wallet_id);
+    if (parseFloat(withdrawAmount) > wallet.balance) {
+      alert("Insufficient balance to withdraw the specified amount.");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/wallet/withdraw', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet_id: selectedWallet.wallet_id, amount: parseFloat(withdrawAmount) }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to withdraw from wallet.");
+      }
+
+      const updatedWallets = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
+      const updatedData = await updatedWallets.json();
+      setWallets(updatedData.wallets || []);
+      setShowTopUpForm(false); // Close withdraw form after successful withdraw
+    } catch (err) {
+      console.error("Error during withdrawal:", err);
+      alert("Failed to withdraw from wallet. Please try again.");
+    }
   };
 
   return (
@@ -188,11 +252,14 @@ function Wallet() {
             <input
               type="number"
               placeholder="Enter amount"
+              value={fundAmount}
+              onChange={(e) => setFundAmount(e.target.value)}
               className="form-control mb-3"
             />
             <button
               type="button"
               className="btn btn-primary w-100 mb-2"
+              onClick={handleFundSubmit}
               style={{ borderRadius: "8px" }}
             >
               Confirm Top-Up
@@ -208,8 +275,10 @@ function Wallet() {
           </div>
         )}
 
-        {/* Transfer Form */}
-        {showTransferForm && (
+        {/* Withdraw Form */}
+
+        <div class="modal-dialog modal-dialog-centered">
+  ...       {selectedWallet && !showTopUpForm && !showTransferForm && (
           <div
             className="card p-4 mx-auto"
             style={{
@@ -219,22 +288,21 @@ function Wallet() {
               boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
             }}
           >
-            <h5 className="text-center mb-3 text-primary">Send Money</h5>
-            <select className="form-select mb-3">
-              <option>Choose beneficiary</option>
-              {/* Add dynamic options */}
-            </select>
+            <h5 className="text-center mb-3 text-primary">Withdraw</h5>
             <input
               type="number"
               placeholder="Enter amount"
+              value={withdrawAmount}
+              onChange={(e) => setWithdrawAmount(e.target.value)}
               className="form-control mb-3"
             />
             <button
               type="button"
-              className="btn btn-primary w-100 mb-2"
+              className="btn btn-success w-100 mb-2"
+              onClick={handleWithdrawSubmit}
               style={{ borderRadius: "8px" }}
             >
-              Send
+              Confirm Withdraw
             </button>
             <button
               type="button"
@@ -247,6 +315,8 @@ function Wallet() {
           </div>
         )}
       </div>
+        </div>
+        
     </div>
   );
 }
