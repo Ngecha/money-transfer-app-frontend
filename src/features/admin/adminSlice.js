@@ -2,8 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // Async thunk to fetch users from an API (Replace with your actual API)
-export const getUsers = createAsyncThunk('admin/getUsers', async () => {
-  const response = await axios.get('/api/users'); // Replace with your actual API endpoint
+export const getUsers = createAsyncThunk('http://127.0.0.1:5000/users', async () => {
+  const response = await axios.get('http://127.0.0.1:5000/users'); // Replace with your actual API endpoint
   return response.data;
 });
 

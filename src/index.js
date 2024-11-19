@@ -1,84 +1,63 @@
-
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
-import { Provider } from 'react-redux';
-import Cookies from "js-cookie";
-import { store } from './app/store';
+import { Provider } from "react-redux";
+import { store } from "./app/store";
 import App from "./App";
 import LandingPage from "./Pages/LandingPage";
-import DashboardPage from "./Pages/Dashboard";
+import DashboardPage from "./Pages/DashboardPage";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import Transactions from "./components/Admin/Transactions";
 import Reports from "./components/Admin/Reports";
 import Settings from "./components/Admin/Settings";
+import Beneficiaries from "./Pages/Beneficiaries";
+import TransactionPage from "./Pages/TransactionPage";
+import Wallet from "./Pages/Wallet";
 
-// Protected Route Component
-const ProtectedRoute = ({ children }) => {
-  const user = Cookies.get("username");
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
-  return children;
-};
-
+// Router Configuration
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-      {
-        path: "/",
-        element: <LandingPage />
+      { 
+        path: "/", 
+        element: <LandingPage /> 
       },
       {
         path: "/dashboard",
-        element: (
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        )
+        element: <DashboardPage />,
       },
       {
         path: "/admin",
-        element: (
-          <ProtectedRoute>
-            <AdminDashboard />
-          </ProtectedRoute>
-        )
+        element: <AdminDashboard />,
+        children: [
+          { path: "transactions", element: <Transactions /> },
+          { path: "reports", element: <Reports /> },
+          { path: "settings", element: <Settings /> },
+        ],
       },
-      {
-        path: "/admin/transactions",
-        element: (
-          <ProtectedRoute>
-            <Transactions />
-          </ProtectedRoute>
-        )
+      { 
+        path: "/beneficiaries", 
+        element: <Beneficiaries /> 
       },
-      {
-        path: "/admin/reports",
-        element: (
-          <ProtectedRoute>
-            <Reports />
-          </ProtectedRoute>
-        )
+      { 
+        path: "/transactions", 
+        element: <TransactionPage /> 
       },
-      {
-        path: "/admin/settings",
-        element: (
-          <ProtectedRoute>
-            <Settings />
-          </ProtectedRoute>
-        )
+      { 
+        path: "/wallet", 
+        element: <Wallet /> 
       },
-      {
-        path: "*",
-        element: <Navigate to="/" replace />
-      }
+      { 
+        path: "*", 
+        element: <Navigate to="/" replace /> 
+      },
     ],
   },
 ]);
 
+// Render the application
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>

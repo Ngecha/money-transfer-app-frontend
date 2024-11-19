@@ -1,16 +1,22 @@
 import React, { useState } from "react";
-import Login from "./LoginModal";
+import Login from "./LoginModal"; // Assuming this is the correct path
 import SignUpForm from "./SignUpModal";
 
 const Navbar = ({ isAuthenticated, username, handleLogout }) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [user, setUser] = useState(null);
 
   const openLoginModal = () => setIsLoginModalOpen(true);
   const openSignUpModal = () => setIsSignupModalOpen(true);
 
   const closeLoginModal = () => setIsLoginModalOpen(false);
   const closeSignUpModal = () => setIsSignupModalOpen(false);
+
+  // Define handleLogin here
+  const handleLogin = (username) => {
+    setUser(username); // Or any state update you want to handle the user login
+  };
 
   return (
     <>
@@ -22,14 +28,27 @@ const Navbar = ({ isAuthenticated, username, handleLogout }) => {
           <div className="flex space-x-4">
             {isAuthenticated ? (
               <>
-                <span className="text-gray-600">Welcome, {username}</span>
-                <button
-                  className="text-blue-600 hover:text-blue-800 font-medium"
-                  onClick={handleLogout}
-                >
-                  Logout
-                </button>
-              </>
+  <div className="flex items-center space-x-3">
+    {/* Profile Image */}
+    <img 
+      src="/path-to-profile-image.jpg" 
+      alt="Profile" 
+      className="w-8 h-8 rounded-full object-cover" 
+    />
+
+    {/* Welcome Message */}
+    <span className="text-gray-600">Welcome, {username}</span>
+  </div>
+
+  {/* Logout Button */}
+  <button
+    className="text-blue-600 hover:text-blue-800 font-medium"
+    onClick={handleLogout}
+  >
+    Logout
+  </button>
+</>
+
             ) : (
               <>
                 <button
@@ -55,7 +74,8 @@ const Navbar = ({ isAuthenticated, username, handleLogout }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <Login
             onClose={closeLoginModal}
-            onOpenSignUp={openSignUpModal} // Ensure this prop is correctly passed
+            openSignUpModal={openSignUpModal}
+            handleLogin={handleLogin} 
           />
         </div>
       )}

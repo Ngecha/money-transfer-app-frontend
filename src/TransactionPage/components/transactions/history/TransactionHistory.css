@@ -1,0 +1,171 @@
+.transaction-history {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  .transactions-table {
+    width: 100%;
+    min-width: 750px;
+  }
+  
+  .table-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  .transaction-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 1fr;
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .transaction-row:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .transaction-date {
+    color: #6c757d;
+    font-size: 14px;
+  }
+  
+  .transaction-description {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .recipient {
+    font-weight: 500;
+    color: #212529;
+  }
+  
+  .transaction-id {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 4px;
+  }
+  
+  .transaction-amount {
+    font-weight: 500;
+    text-align: right;
+  }
+  
+  .amount-sent {
+    color: #dc3545;
+  }
+  
+  .amount-received {
+    color: #28a745;
+  }
+  
+  .transaction-status {
+    text-align: center;
+    text-transform: capitalize;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    width: fit-content;
+    margin-left: auto;
+  }
+  
+  .status-completed {
+    background-color: #e7f7ed;
+    color: #0d8a3c;
+  }
+  
+  .status-pending {
+    background-color: #fff7e6;
+    color: #b76e00;
+  }
+  
+  .status-failed {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+  
+  .loading-state {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+  }
+  
+  .error-state {
+    text-align: center;
+    padding: 40px;
+    color: #dc3545;
+  }
+  
+  .no-results {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+    font-style: italic;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .transactions-table {
+      min-width: 100%;
+    }
+  
+    .table-header {
+      display: none;
+    }
+  
+    .transaction-row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 16px;
+    }
+  
+    .transaction-date {
+      font-size: 12px;
+    }
+  
+    .transaction-amount {
+      text-align: left;
+    }
+  
+    .transaction-status {
+      margin-left: 0;
+    }
+  }
+  
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .table-header {
+      background-color: #2d2d2d;
+      border-bottom-color: #404040;
+      color: #e9ecef;
+    }
+  
+    .transaction-row {
+      border-bottom-color: #404040;
+    }
+  
+    .transaction-row:hover {
+      background-color: #2d2d2d;
+    }
+  
+    .recipient {
+      color: #e9ecef;
+    }
+  
+    .transaction-date,
+    .transaction-id {
+      color: #adb5bd;
+    }
+  
+    .loading-state,
+    .no-results {
+      color: #adb5bd;
+    }
+  }

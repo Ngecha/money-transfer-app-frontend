@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import SendMoneyForm from '../TransactionPage/components/transactions/send-money/SendMoneyForm';
-import TransactionHistory from '../TransactionPage/components/transactions/history/TransactionHistory';
-import TransactionDetails from '../TransactionPage/components/transactions/details/TransactionDetails';
-import '../TransactionPage/components/transactions/dashboard/TransactionDashboard.css';
+import SendMoneyForm from '../send-money/SendMoneyForm';
+import TransactionHistory from '../history/TransactionHistory';
+import TransactionDetails from '../details/TransactionDetails';
+import './TransactionDashboard.css';
 
 const TransactionDashboard = () => {
   const [currentView, setCurrentView] = useState('history');
