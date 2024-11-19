@@ -3,6 +3,7 @@ import { Outlet,useNavigate } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 import Cookies from "js-cookie";
 
+
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState(null);
@@ -32,6 +33,7 @@ const App = () => {
   return (
     <div>
       <Navbar isAuthenticated={isAuthenticated} username={username} handleLogout={handleLogout} />
+      
       <div className="content">
         <Outlet context={{ handleLogin, isAuthenticated, username }} /> 
       </div>

@@ -28,6 +28,19 @@ export default function LeftNav() {
           >
             Beneficiaries
           </NavLink>
+
+        </li>
+        <li>
+        <NavLink
+            to="/transactions"
+            className={({ isActive }) =>
+              `block py-3 px-4 rounded-lg transition-transform transform duration-300 ease-in-out
+               ${isActive ? 'bg-blue-700 text-white' : 'bg-white hover:bg-blue-100'} 
+               shadow-md hover:scale-105`
+            }
+          >
+            Transactions
+          </NavLink>
         </li>
       </ul>
     </nav>

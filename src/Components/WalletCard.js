@@ -155,7 +155,7 @@ export default function WalletCard() {
   if (wallets.length === 0) return <p>No wallets available.</p>;
 
   return (
-    <div className="space-y-4">
+    <div className="w-96 h-96 overflow-y-auto space-y-4">
       {wallets.map((wallet) => (
         <div key={wallet.wallet_id} className="p-4 bg-white rounded shadow">
           <h3 className="text-xl font-semibold">{wallet.wallet_name}</h3>

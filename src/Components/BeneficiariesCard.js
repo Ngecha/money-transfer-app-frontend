@@ -63,7 +63,7 @@ export default function BeneficiariesCard() {
   }, [user]);
 
   return (
-    <div className="bg-white rounded shadow p-4">
+    <div className="w-96 h-96 overflow-y-auto  bg-white rounded shadow p-4">
       <h2 className="text-2xl font-bold mb-4">Beneficiaries</h2>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}
