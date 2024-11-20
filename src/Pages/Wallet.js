@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import LeftNav from "../Components/LeftNav";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
+// import "@fortawesome/fontawesome-free/css/all.min.css";
 import Cookies from "js-cookie";
 import Walletccard from "../Pages/waletccard";
 
@@ -18,6 +18,8 @@ function Wallet() {
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingWallets, setLoadingWallets] = useState(false);
+  const [fundAmount, setFundAmount] = useState('');
+  const [withdrawAmount, setWithdrawAmount] = useState('');
 
   // Fetch user data
   useEffect(() => {
@@ -201,6 +203,68 @@ function Wallet() {
     setSelectedBeneficiary(null);
   };
 
+  // Handle Fund Wallet
+  const handleFundSubmit = async () => {
+    if (!fundAmount || isNaN(fundAmount)) {
+      alert("Please enter a valid amount.");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/wallet/fund', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet_id: selectedWallet.wallet_id, amount: parseFloat(fundAmount) }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fund wallet.");
+      }
+
+      const updatedWallets = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
+      const updatedData = await updatedWallets.json();
+      setWallets(updatedData.wallets || []);
+      setShowTopUpForm(false); // Close top-up form after successful fund
+    } catch (err) {
+      console.error("Error during funding:", err);
+      alert("Failed to fund wallet. Please try again.");
+    }
+  };
+
+  // Handle Withdraw Wallet
+  const handleWithdrawSubmit = async () => {
+    if (!withdrawAmount || isNaN(withdrawAmount)) {
+      alert("Please enter a valid amount.");
+      return;
+    }
+
+    const wallet = wallets.find((w) => w.wallet_id === selectedWallet.wallet_id);
+    if (parseFloat(withdrawAmount) > wallet.balance) {
+      alert("Insufficient balance to withdraw the specified amount.");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/wallet/withdraw', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ wallet_id: selectedWallet.wallet_id, amount: parseFloat(withdrawAmount) }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to withdraw from wallet.");
+      }
+
+      const updatedWallets = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
+      const updatedData = await updatedWallets.json();
+      setWallets(updatedData.wallets || []);
+      setShowTopUpForm(false); // Close withdraw form after successful withdraw
+    } catch (err) {
+      console.error("Error during withdrawal:", err);
+      alert("Failed to withdraw from wallet. Please try again.");
+    }
+  };
+
   return (
     <div className="d-flex min-vh-100 bg-light">
       <LeftNav />
@@ -309,7 +373,7 @@ function Wallet() {
           </div>
         )}
       </div>
-    </div>
+        </div>
   );
 }
 
