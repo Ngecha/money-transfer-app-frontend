@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import LeftNav from "../Components/LeftNav";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import "@fortawesome/fontawesome-free/css/all.min.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import Cookies from "js-cookie";
 import Walletccard from "../Pages/waletccard";
+import { Popover } from "bootstrap";
 
 function Wallet() {
   const [wallets, setWallets] = useState([]);
@@ -18,8 +19,8 @@ function Wallet() {
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingWallets, setLoadingWallets] = useState(false);
-  const [fundAmount, setFundAmount] = useState('');
-  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [description, setDescription] = useState('')
+
 
   // Fetch user data
   useEffect(() => {
@@ -48,36 +49,36 @@ function Wallet() {
     fetchUser();
   }, []);
 
-  // Fetch wallets
-  useEffect(() => {
-    const fetchWallets = async () => {
-      if (!user) return;
+// Fetch wallets
+useEffect(() => {
+  const fetchWallets = async () => {
+    if (!user) return;
 
-      setLoadingWallets(true);
-      try {
-        const response = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
-        if (!response.ok) throw new Error("Failed to fetch wallets.");
+    setLoadingWallets(true);
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
+      if (!response.ok) throw new Error("Failed to fetch wallets.");
 
-        const { wallets = [] } = await response.json();
-        setWallets(wallets);
-      } catch (error) {
-        console.error(error.message);
-        setError(error.message);
-      } finally {
-        setLoadingWallets(false);
-      }
-    };
+      const { wallets = [] } = await response.json();
+      setWallets(wallets);
+    } catch (error) {
+      console.error(error.message);
+      setError(error.message);
+    } finally {
+      setLoadingWallets(false);
+    }
+  };
 
-    fetchWallets();
-  }, [user]);
+  fetchWallets();
+}, [user]);
 
   const fetchBeneficiaries = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/beneficiaries");
+      const response = await fetch(`http://127.0.0.1:5000/beneficiaries/${user.user_id}`);
       if (!response.ok) throw new Error("Failed to fetch beneficiaries.");
 
-      const data = await response.json();
-      setBeneficiaries(data.beneficiaries || []);
+      const beneficiaries = await response.json();
+      setBeneficiaries(beneficiaries);
     } catch (error) {
       console.error(error.message);
       setError(error.message);
@@ -92,8 +93,8 @@ function Wallet() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: 'include',
         body: JSON.stringify({
+          user_id : user.user_id,
           wallet_id: selectedWallet.wallet_id,
           amount: parseFloat(amount),
         })
@@ -118,14 +119,16 @@ function Wallet() {
   // Transfer functionality
   const handleTransfer = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/transfer", {
+      const response = await fetch("http://127.0.0.1:5000/transaction", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", },
         body: JSON.stringify({
-          from_wallet_id: selectedWallet.wallet_id,
-          to_wallet_id: selectedBeneficiary,
+          user_id : user.user_id,
+          sender_wallet_id : selectedWallet.wallet_id,
+          beneficiary_email : selectedBeneficiary,
           amount: parseFloat(amount),
-        }),
+          description:description,
+        })
       });
 
       if (!response.ok) throw new Error("Failed to transfer money.");
@@ -135,6 +138,9 @@ function Wallet() {
       setAmount(0);
     } catch (error) {
       console.error(error.message);
+      console.log(selectedBeneficiary)
+      console.warn(error);
+      
       setError(error.message);
     }
   };
@@ -142,10 +148,11 @@ function Wallet() {
   // Withdraw functionality
   const handleWithdraw = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/withdraw", {
+      const response = await fetch("http://127.0.0.1:5000/wallet/withdraw", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          user_id : user.user_id,
           wallet_id: selectedWallet.wallet_id,
           amount: parseFloat(amount),
         }),
@@ -167,6 +174,7 @@ function Wallet() {
     }
   };
 
+
   // Button handlers
   const handleWalletClick = (wallet) => {
     setSelectedWallet(wallet);
@@ -179,13 +187,14 @@ function Wallet() {
     setShowTopUpForm(true);
     setShowTransferForm(false);
     setShowWithdrawForm(false);
+    
   };
 
   const handleTransferClick = () => {
     fetchBeneficiaries();
     setShowTransferForm(true);
     setShowTopUpForm(false);
-    setShowWithdrawForm(false);
+    setShowWithdrawForm(false); 
   };
 
   const handleWithdrawClick = () => {
@@ -199,71 +208,10 @@ function Wallet() {
     setShowTopUpForm(false);
     setShowTransferForm(false);
     setShowWithdrawForm(false);
-    setAmount(0);
     setSelectedBeneficiary(null);
+    window.location.reload()
   };
 
-  // Handle Fund Wallet
-  const handleFundSubmit = async () => {
-    if (!fundAmount || isNaN(fundAmount)) {
-      alert("Please enter a valid amount.");
-      return;
-    }
-
-    try {
-      const response = await fetch('http://127.0.0.1:5000/wallet/fund', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wallet_id: selectedWallet.wallet_id, amount: parseFloat(fundAmount) }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fund wallet.");
-      }
-
-      const updatedWallets = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
-      const updatedData = await updatedWallets.json();
-      setWallets(updatedData.wallets || []);
-      setShowTopUpForm(false); // Close top-up form after successful fund
-    } catch (err) {
-      console.error("Error during funding:", err);
-      alert("Failed to fund wallet. Please try again.");
-    }
-  };
-
-  // Handle Withdraw Wallet
-  const handleWithdrawSubmit = async () => {
-    if (!withdrawAmount || isNaN(withdrawAmount)) {
-      alert("Please enter a valid amount.");
-      return;
-    }
-
-    const wallet = wallets.find((w) => w.wallet_id === selectedWallet.wallet_id);
-    if (parseFloat(withdrawAmount) > wallet.balance) {
-      alert("Insufficient balance to withdraw the specified amount.");
-      return;
-    }
-
-    try {
-      const response = await fetch('http://127.0.0.1:5000/wallet/withdraw', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wallet_id: selectedWallet.wallet_id, amount: parseFloat(withdrawAmount) }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to withdraw from wallet.");
-      }
-
-      const updatedWallets = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
-      const updatedData = await updatedWallets.json();
-      setWallets(updatedData.wallets || []);
-      setShowTopUpForm(false); // Close withdraw form after successful withdraw
-    } catch (err) {
-      console.error("Error during withdrawal:", err);
-      alert("Failed to withdraw from wallet. Please try again.");
-    }
-  };
 
   return (
     <div className="d-flex min-vh-100 bg-light">
@@ -284,25 +232,36 @@ function Wallet() {
           </div>
         )}
 
-        {/* Wallet Details */}
-        {selectedWallet && !showTopUpForm && !showTransferForm && !showWithdrawForm && (
-          <div className="card p-4 mx-auto" style={{ maxWidth: "25rem", backgroundColor: "#f0f8ff", borderRadius: "12px", boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)" }}>
-            <h5 className="text-center mb-3 text-primary">{selectedWallet.wallet_name || "Unnamed Wallet"}</h5>
+{/* Wallet Details */}
+{selectedWallet && !showTopUpForm && !showTransferForm && !showWithdrawForm && (
+  <div className="card p-4 mx-auto" style={{ maxWidth: "25rem", backgroundColor: "#f0f8ff", borderRadius: "12px", boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)" }}>
+    {/* Back Arrow */}
+    <button 
+      type="button" 
+      className="btn p-0 border-0 mb-3" 
+      onClick={handleBackClick} 
+      style={{ backgroundColor: "transparent", color: "#0046be", fontSize: "1.5rem", position: "absolute", top: "1rem", left: "1rem" }}
+    >
+      ←
+    </button>
 
-            <div className="d-flex flex-column align-items-center mb-4">
-              <h6 className="text-muted mb-2">Balance</h6>
-              <p className="fs-4 fw-bold text-dark">
-                {selectedWallet.currency} {selectedWallet.balance.toFixed(2)}
-              </p>
-            </div>
+    <h5 className="text-center mb-3 text-primary">{selectedWallet.wallet_name || "Unnamed Wallet"}</h5>
 
-            <div className="d-flex gap-3 justify-content-between mb-4">
-              <button type="button" className="btn rounded-pill flex-grow-1" onClick={handleTopUpClick} style={{ backgroundColor: "#0046be", color: "white" }}>Top Up</button>
-              <button type="button" className="btn rounded-pill flex-grow-1" onClick={handleTransferClick} style={{ backgroundColor: "#1c1c1c", color: "white" }}>Transfer</button>
-              <button type="button" className="btn rounded-pill flex-grow-1" onClick={handleWithdrawClick} style={{ backgroundColor: "#be0000", color: "white" }}>Withdraw</button>
-            </div>
-          </div>
-        )}
+    <div className="d-flex flex-column align-items-center mb-4">
+      <h6 className="text-muted mb-2">Balance</h6>
+      <p className="fs-4 fw-bold text-dark">
+        {selectedWallet.currency} {selectedWallet.balance.toFixed(2)}
+      </p>
+    </div>
+
+    <div className="d-flex gap-3 justify-content-between mb-4">
+      <button type="button" className="btn rounded-pill flex-grow-1" onClick={handleTopUpClick} style={{ backgroundColor: "#0046be", color: "white" }}>Top Up</button>
+      <button type="button" className="btn rounded-pill flex-grow-1" onClick={handleTransferClick} style={{ backgroundColor: "#1c1c1c", color: "white" }}>Transfer</button>
+      <button type="button" className="btn rounded-pill flex-grow-1" onClick={handleWithdrawClick} style={{ backgroundColor: "#be0000", color: "white" }}>Withdraw</button>
+    </div>
+  </div>
+)}
+
 
         {/* Top Up Form */}
         {showTopUpForm && (
@@ -337,11 +296,12 @@ function Wallet() {
                 <div className="modal-body">
                   <select onChange={(e) => setSelectedBeneficiary(e.target.value)} className="form-select mb-3">
                     <option value="">Select beneficiary</option>
-                    {beneficiaries.map((b) => (
-                      <option key={b.wallet_id} value={b.wallet_id}>{b.wallet_name}</option>
+                    {beneficiaries.map((beneficiary, index) => (
+                      <option key={index}>{beneficiary.beneficiary_email}</option>
                     ))}
                   </select>
                   <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} className="form-control mb-3" placeholder="Enter amount" />
+                  <input type="string" value= {description} onChange={(e) => setDescription(e.target.value)} className="form-control mb-3" placeholder="Describe your transaction"/>
                 </div>
                 <div className="modal-footer">
                   <button onClick={handleTransfer} className="btn btn-primary">Transfer</button>
