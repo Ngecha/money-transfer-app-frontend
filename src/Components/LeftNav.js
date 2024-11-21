@@ -41,8 +41,8 @@ export default function LeftNav() {
           >
             Wallet
           </NavLink>
-        <li>
-        <NavLink
+            <li>
+            <NavLink
             to="/transactions"
             className={({ isActive }) =>
               `block py-3 px-4 rounded-lg transition-transform transform duration-300 ease-in-out
@@ -52,10 +52,9 @@ export default function LeftNav() {
           >
             Transactions
           </NavLink>
-          
-        
-
-          <NavLink
+            </li>
+            <li>
+            <NavLink
             to="/admin"
             className={({ isActive }) =>
               `block py-3 px-4 rounded-lg transition-transform transform duration-300 ease-in-out
@@ -65,8 +64,7 @@ export default function LeftNav() {
           >
             ADMIN
           </NavLink>
-        
-        </li>
+            </li>
       </ul>
     </nav>
   );
