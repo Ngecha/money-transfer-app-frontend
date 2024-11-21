@@ -65,14 +65,17 @@ const Beneficiaries = () => {
       }, [user]);
 
     // Add Beneficiary function
-    const addBeneficiary = async () => {
+
+
+      // Add Beneficiary function
+      const addBeneficiary = async () => {
         try {
             const newBeneficiary = {
                 user_id: user.user_id, 
                 beneficiary_email: prompt("Enter beneficiary email") 
             };
 
-            const response = await fetch(`http://127.0.0.1:5000/beneficiary`, {
+            const response = await fetch(`http://127.0.0.1:5000/beneficiary/add`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -83,9 +86,10 @@ const Beneficiaries = () => {
             if (!response.ok) {
                 throw new Error("Failed to add beneficiary.");
             }
-
+            window.location.reload()
             const addedBeneficiary = await response.json();
             setBeneficiaries((prevBeneficiaries) => [...prevBeneficiaries, addedBeneficiary]);
+            
 
         } catch (error) {
             console.error("Error adding beneficiary:", error);

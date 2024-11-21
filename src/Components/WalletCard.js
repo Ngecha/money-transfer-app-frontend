@@ -63,66 +63,6 @@ export default function WalletCard() {
     fetchWallets();
   }, [user]);
 
-  const handleFund = async (walletId) => {
-    const amount = prompt("Enter amount to fund:");
-    if (!amount || isNaN(amount)) {
-      alert("Please enter a valid number.");
-      return;
-    }
-
-    try {
-      const response = await fetch('http://127.0.0.1:5000/wallet/fund', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wallet_id: walletId, amount: parseFloat(amount) }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fund wallet.");
-      }
-
-      const updatedWallets = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
-      const updatedData = await updatedWallets.json();
-      setWallets(updatedData.wallets || []);
-    } catch (err) {
-      console.error("Error during funding:", err);
-      alert("Failed to fund wallet. Please try again.");
-    }
-  };
-
-  const handleWithdraw = async (walletId) => {
-    const amount = prompt("Enter amount to withdraw:");
-    if (!amount || isNaN(amount)) {
-      alert("Please enter a valid number.");
-      return;
-    }
-
-    const wallet = wallets.find((w) => w.wallet_id === walletId);
-    if (parseFloat(amount) > wallet.balance) {
-      alert("Insufficient balance to withdraw the specified amount.");
-      return;
-    }
-
-    try {
-      const response = await fetch('http://127.0.0.1:5000/wallet/withdraw', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ wallet_id: walletId, amount: parseFloat(amount) }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to withdraw from wallet.");
-      }
-
-      const updatedWallets = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
-      const updatedData = await updatedWallets.json();
-      setWallets(updatedData.wallets || []);
-    } catch (err) {
-      console.error("Error during withdrawal:", err);
-      alert("Failed to withdraw from wallet. Please try again.");
-    }
-  };
-
   const handleCreateWallet = async () => {
     const walletName = prompt("Enter a name for the new wallet:");
     if (!walletName) {
