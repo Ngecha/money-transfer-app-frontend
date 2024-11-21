@@ -13,6 +13,7 @@ import Settings from "./components/Admin/Settings";
 import Beneficiaries from "./Pages/Beneficiaries";
 import TransactionPage from "./Pages/TransactionPage";
 import Wallet from "./Pages/Wallet";
+import UserDetails from "./AdminPage/UserDetails";
 
 // Router Configuration
 const router = createBrowserRouter([
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
         path: "*", 
         element: <Navigate to="/" replace /> 
       },
+      { path: "/userDetails", element: <UserDetails />},
     ],
   },
 ]);

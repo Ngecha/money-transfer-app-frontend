@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Login from "./LoginModal"; // Assuming this is the correct path
 import SignUpForm from "./SignUpModal";
+import { Link } from "react-router-dom";
 
 const Navbar = ({ isAuthenticated, username, handleLogout }) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
-  const [user, setUser] = useState(null);
 
   const openLoginModal = () => setIsLoginModalOpen(true);
   const openSignUpModal = () => setIsSignupModalOpen(true);
@@ -15,7 +15,6 @@ const Navbar = ({ isAuthenticated, username, handleLogout }) => {
 
   // Define handleLogin here
   const handleLogin = (username) => {
-    setUser(username); // Or any state update you want to handle the user login
   };
 
   return (
@@ -29,17 +28,9 @@ const Navbar = ({ isAuthenticated, username, handleLogout }) => {
             {isAuthenticated ? (
               <>
   <div className="flex items-center space-x-3">
-    {/* Profile Image */}
-    <img 
-      src="/path-to-profile-image.jpg" 
-      alt="Profile" 
-      className="w-8 h-8 rounded-full object-cover" 
-    />
-
     {/* Welcome Message */}
-    <span className="text-gray-600">Welcome, {username}</span>
+    <span className="text-gray-600">Welcome,<Link to={"/userDetails"}>{username}</Link> </span>
   </div>
-
   {/* Logout Button */}
   <button
     className="text-blue-600 hover:text-blue-800 font-medium"

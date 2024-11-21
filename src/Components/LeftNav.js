@@ -51,15 +51,20 @@ export default function LeftNav() {
         <li className="w-full">
           <NavLink
             to="/transactions"
+            <li>
+            <NavLink
+            to="/transactions"
             className={({ isActive }) =>
-              `block py-4 px-6 text-center rounded-lg transition-all duration-300 
-               transform hover:scale-105 
-               ${isActive ? 'bg-blue-700 text-white shadow-lg' : 'bg-white text-gray-700 shadow-md hover:shadow-lg hover:bg-blue-100 hover:text-blue-700'}`
+              `block py-3 px-4 rounded-lg transition-transform transform duration-300 ease-in-out
+               ${isActive ? 'bg-blue-700 text-white' : 'bg-white hover:bg-blue-100'} 
+               shadow-md hover:scale-105`
             }
           >
             Transactions
           </NavLink>
+            </li>
         </li>
+            </li>
       </ul>
     </nav>
   );
