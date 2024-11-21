@@ -29,7 +29,7 @@ function Wallet() {
         const username = Cookies.get("username");
         if (!username) throw new Error("User is not logged in.");
 
-        const response = await fetch("http://127.0.0.1:5000/users");
+        const response = await fetch("https://money-transfer-app-1.onrender.com/users");
         if (!response.ok) throw new Error("Failed to fetch users.");
 
         const { users = [] } = await response.json();
@@ -55,7 +55,7 @@ useEffect(() => {
 
     setLoadingWallets(true);
     try {
-      const response = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
+      const response = await fetch(`https://money-transfer-app-1.onrender.com/wallet/${user.user_id}`);
       if (!response.ok) throw new Error("Failed to fetch wallets.");
 
       const { wallets = [] } = await response.json();
@@ -73,7 +73,7 @@ useEffect(() => {
 
   const fetchBeneficiaries = async () => {
     try {
-      const response = await fetch(`http://127.0.0.1:5000/beneficiaries/${user.user_id}`);
+      const response = await fetch(`https://money-transfer-app-1.onrender.com/beneficiaries/${user.user_id}`);
       if (!response.ok) throw new Error("Failed to fetch beneficiaries.");
 
       const beneficiaries = await response.json();
@@ -87,7 +87,7 @@ useEffect(() => {
   // Top Up functionality
   const handleTopUp = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/wallet/fund", {
+      const response = await fetch("https://money-transfer-app-1.onrender.com/wallet/fund", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -118,7 +118,7 @@ useEffect(() => {
   // Transfer functionality
   const handleTransfer = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/transaction", {
+      const response = await fetch("https://money-transfer-app-1.onrender.com/transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json", },
         body: JSON.stringify({
@@ -147,7 +147,7 @@ useEffect(() => {
   // Withdraw functionality
   const handleWithdraw = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5000/wallet/withdraw", {
+      const response = await fetch("https://money-transfer-app-1.onrender.com/wallet/withdraw", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

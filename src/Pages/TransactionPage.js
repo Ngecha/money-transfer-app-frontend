@@ -25,7 +25,7 @@ const Transactions = () => {
       }
 
       try {
-        const response = await fetch(`http://127.0.0.1:5000/users`);
+        const response = await fetch(`https://money-transfer-app-1.onrender.com/users`);
         if (!response.ok) {
           throw new Error("Failed to fetch users.");
         }
@@ -59,7 +59,7 @@ const Transactions = () => {
           }).toString();
 
           const response = await fetch(
-            `http://127.0.0.1:5000/transactions/${user.user_id}?${queryParams}`
+            `https://money-transfer-app-1.onrender.com/${user.user_id}?${queryParams}`
           );
           if (!response.ok) {
             throw new Error("Failed to fetch transactions.");

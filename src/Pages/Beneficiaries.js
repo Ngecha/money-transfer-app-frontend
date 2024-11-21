@@ -17,7 +17,7 @@ const Beneficiaries = () => {
           }
     
           try {
-            const response = await fetch(`http://127.0.0.1:5000/users`);
+            const response = await fetch(`https://money-transfer-app-1.onrender.com/users`);
             if (!response.ok) {
               throw new Error("Failed to fetch users.");
             }
@@ -46,7 +46,7 @@ const Beneficiaries = () => {
           if (user) {
             try {
               const response = await fetch(
-                `http://127.0.0.1:5000/beneficiaries/${user.user_id}`
+                `https://money-transfer-app-1.onrender.com/${user.user_id}`
               );
               if (!response.ok) {
                 throw new Error("Failed to fetch beneficiaries.");
@@ -75,7 +75,7 @@ const Beneficiaries = () => {
                 beneficiary_email: prompt("Enter beneficiary email") 
             };
 
-            const response = await fetch(`http://127.0.0.1:5000/beneficiary/add`, {
+            const response = await fetch(`https://money-transfer-app-1.onrender.com/beneficiary/add`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -100,7 +100,7 @@ const Beneficiaries = () => {
     // Remove Beneficiary function
     const removeBeneficiary = async (beneficiary_id) => {
         try {
-            const response = await fetch(`http://127.0.0.1:5000/beneficiary/${beneficiary_id}`, {
+            const response = await fetch(`https://money-transfer-app-1.onrender.com/beneficiary/${beneficiary_id}`, {
                 method: "DELETE",
             });
 
