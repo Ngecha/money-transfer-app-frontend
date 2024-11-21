@@ -11,6 +11,10 @@ const Transactions = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateRange, setDateRange] = useState("all");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const transactionsPerPage = 10;
+
   // Fetch logged-in user details
   useEffect(() => {
     const fetchUser = async () => {
@@ -73,9 +77,23 @@ const Transactions = () => {
     fetchTransactions();
   }, [user, searchQuery, statusFilter, dateRange]);
 
+  // Handle pagination
+  const indexOfLastTransaction = currentPage * transactionsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+  const currentTransactions = transactions.slice(
+    indexOfFirstTransaction,
+    indexOfLastTransaction
+  );
+
+  const totalPages = Math.ceil(transactions.length / transactionsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="flex">
-      <LeftNav/>      
+      <LeftNav />
       <div className="w-full overflow-y-auto bg-white shadow-md rounded-lg p-4">
         <h2 className="text-lg font-semibold mb-4">Transaction History</h2>
         {error && <p className="text-red-500">{error}</p>}
@@ -124,31 +142,68 @@ const Transactions = () => {
               <th className="px-4 py-2 border">Date</th>
               <th className="px-4 py-2 border">Amount</th>
               <th className="px-4 py-2 border">Status</th>
+              <th className="px-4 py-2 border">Transaction Type</th>
+              <th className="px-4 py-2 border">Wallet</th>
+              <th className="px-4 py-2 border">Description</th>
             </tr>
           </thead>
           <tbody>
-            {transactions.length === 0 ? (
+            {currentTransactions.length === 0 ? (
               <tr>
-                <td colSpan="3" className="text-center py-4">
+                <td colSpan="6" className="text-center py-4">
                   No transactions found.
                 </td>
               </tr>
             ) : (
-              transactions.map((transaction) => {
+              currentTransactions.map((transaction) => {
                 const formattedDate = new Date(
                   transaction.transaction_date
                 ).toLocaleString();
+                const walletName = transaction.sender_wallet_name
+                  ? `From: ${transaction.sender_wallet_name}`
+                  : transaction.receiver_wallet_name
+                  ? `To: ${transaction.receiver_wallet_name}`
+                  : "N/A";
+
+                // Determine the color class for the amount based on transaction type
+                const amountClass =
+                transaction.transaction_type === "deposit"
+                  ? "text-green-500"
+                  : transaction.transaction_type === "withdrawal"
+                  ? "text-red-500"
+                  : "text-black";
+
                 return (
                   <tr key={transaction.id} className="hover:bg-gray-50">
                     <td className="px-4 py-2 border">{formattedDate}</td>
-                    <td className="px-4 py-2 border">{transaction.amount}</td>
+                    <td className={`px-4 py-2 border ${amountClass}`}>{transaction.amount}</td>
                     <td className="px-4 py-2 border">{transaction.status}</td>
+                    <td className="px-4 py-2 border">
+                      {transaction.transaction_type}
+                    </td>
+                    <td className="px-4 py-2 border">{walletName}</td>
+                    <td className="px-4 py-2 border">{transaction.description}</td>
                   </tr>
                 );
               })
             )}
           </tbody>
         </table>
+
+        {/* Pagination */}
+        <div className="mt-4 flex justify-center items-center space-x-2">
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index}
+              className={`px-3 py-1 border rounded ${
+                currentPage === index + 1 ? "bg-blue-500 text-white" : ""
+              }`}
+              onClick={() => handlePageChange(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

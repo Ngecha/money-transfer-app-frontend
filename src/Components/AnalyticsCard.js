@@ -7,11 +7,9 @@ import {
   Title,
   Tooltip,
   Legend,
-  LineElement,
-  PointElement,
   ArcElement,
 } from "chart.js";
-import { Bar, Line, Pie } from "react-chartjs-2";
+import { Bar, Pie } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -20,78 +18,58 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  LineElement,
-  PointElement,
   ArcElement
 );
 
-export default function AnalyticsCard({ transactionData }) {
-  // Fallback for transactionData to prevent runtime errors
-  const defaultData = {
-    sentCount: 0,
-    receivedCount: 0,
-    pendingCount: 0,
-    failedCount: 0,
-    monthlyLabels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    monthlyCounts: [0, 0, 0, 0, 0, 0],
+export default function AnalyticsCard() {
+  // Sample data for transactions
+  const sampleData = {
+    sent_count: 40,
+    received_count: 35,
+    pending_count: 15,
+    failed_count: 10,
   };
 
-  const data = transactionData ?? defaultData; // Use fallback data if transactionData is null or undefined
-
-  // Safeguard: Ensure all required properties exist in the data object
-  const {
-    sentCount = 0,
-    receivedCount = 0,
-    pendingCount = 0,
-    failedCount = 0,
-    monthlyLabels = defaultData.monthlyLabels,
-    monthlyCounts = defaultData.monthlyCounts,
-  } = data;
-
+  // Chart data configuration
   const transactionSummary = {
     labels: ["Sent", "Received", "Pending", "Failed"],
     datasets: [
       {
         label: "Transactions",
-        data: [sentCount, receivedCount, pendingCount, failedCount],
+        data: [
+          sampleData.sent_count,
+          sampleData.received_count,
+          sampleData.pending_count,
+          sampleData.failed_count,
+        ],
         backgroundColor: ["#4CAF50", "#2196F3", "#FFC107", "#F44336"],
       },
     ],
   };
 
-  const monthlySummary = {
-    labels: monthlyLabels,
-    datasets: [
-      {
-        label: "Monthly Transactions",
-        data: monthlyCounts,
-        borderColor: "#2196F3",
-        backgroundColor: "rgba(33, 150, 243, 0.5)",
-        tension: 0.3,
-      },
-    ],
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: { beginAtZero: true },
+      y: { beginAtZero: true },
+    },
   };
 
   return (
-    <div className="bg-white rounded shadow p-6 flex">
-      <h3 className="text-xl font-semibold mb-4">Transaction </h3>
-      <div className="space-y-6 flex grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div className="bg-white rounded shadow p-6">
+      <h3 className="text-xl font-semibold mb-4">User Analytics </h3>
+      <div className="space-y-6 grid flex grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {/* Bar Chart */}
         <div className="h-48">
-          <h4 className="text-lg font-medium mb-2">Analytics</h4>
-          <Bar data={transactionSummary} options={{ responsive: true }} />
-        </div>
-
-        {/* Line Chart */}
-        <div className="h-48">
-          <h4 className="text-lg font-medium mb-2">Monthly Trends</h4>
-          <Line data={monthlySummary} options={{ responsive: true }} />
+          <h4 className="text-lg font-medium mb-2">Transaction Summary</h4>
+          <Bar data={transactionSummary} options={options} />
         </div>
 
         {/* Pie Chart */}
-        <div className="h-48">
+        <div className="h-48 ">
           <h4 className="text-lg font-medium mb-2">Transaction Breakdown</h4>
-          <Pie data={transactionSummary} options={{ responsive: true }} />
+          <Pie data={transactionSummary} />
         </div>
       </div>
     </div>
