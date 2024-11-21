@@ -5,7 +5,6 @@ export default function BeneficiariesCard() {
   const [beneficiaries, setBeneficiaries] = useState([]);
   const [error, setError] = useState("");
   const [user, setUser] = useState(null);
-  const [phone_number, setPhone_number] = useState('')
 
   useEffect(() => {
     const fetchUser = async () => {

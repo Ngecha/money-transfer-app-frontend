@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Cookies from "js-cookie";
 import Walletccard from "../Pages/waletccard";
-import { Popover } from "bootstrap";
 
 function Wallet() {
   const [wallets, setWallets] = useState([]);
