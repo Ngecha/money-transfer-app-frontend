@@ -7,7 +7,7 @@ const Beneficiaries = () => {
     const [error, setError] = useState(null);
     const [user, setUser] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [beneficiaryemail, setBeneficiaryemail]=useState(null)
+    const [beneficiaryemail, setBeneficiaryemail]=useState('')
 
     // Fetch logged-in user
     useEffect(() => {
