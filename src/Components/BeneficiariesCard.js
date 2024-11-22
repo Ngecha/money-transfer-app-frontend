@@ -43,7 +43,7 @@ export default function BeneficiariesCard() {
       if (user) {
         try {
           const response = await fetch(
-            `https://money-transfer-app-1.onrender.com/${user.user_id}`
+            `https://money-transfer-app-1.onrender.com/beneficiaries/${user.user_id}`
           );
           if (!response.ok) {
             throw new Error("Failed to fetch beneficiaries.");
@@ -62,7 +62,7 @@ export default function BeneficiariesCard() {
   }, [user]);
 
   return (
-    <div className="w-96 h-96 overflow-y-auto  bg-white rounded shadow p-4">
+    <div className="w-96 h-96   bg-white rounded shadow p-4">
       <h2 className="text-2xl font-bold mb-4">Beneficiaries</h2>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}

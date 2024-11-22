@@ -43,7 +43,7 @@ const RecentTransactions = () => {
       if (user) {
         try {
           const response = await fetch(
-            `http://https://money-transfer-app-1.onrender.com/${user.user_id}`
+            `https://money-transfer-app-1.onrender.com/transactions/${user.user_id}`
           );
           if (!response.ok) {
             throw new Error("Failed to fetch transactions.");
@@ -71,17 +71,15 @@ const RecentTransactions = () => {
           <tr className="bg-gray-100">
             <th className="px-4 py-2 border">Date</th>
             <th className="px-4 py-2 border">Amount</th>
-            <th className="px-4 py-2 border">Status</th>
           </tr>
         </thead>
         <tbody>
-          {transactions.map((transaction) => {
+          {transactions.slice(0, 5).map((transaction) => {
             const formattedDate = new Date(transaction.transaction_date).toLocaleString();
             return (
               <tr key={transaction.id} className="hover:bg-gray-50">
                 <td className="px-4 py-2 border">{formattedDate}</td>
                 <td className="px-4 py-2 border">{transaction.amount}</td>
-                <td className="px-4 py-2 border">{transaction.status}</td>
               </tr>
             );
           })}

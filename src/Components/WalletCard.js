@@ -16,7 +16,7 @@ export default function WalletCard() {
       }
 
       try {
-        const response = await fetch(`http://127.0.0.1:5000/users`);
+        const response = await fetch(`https://money-transfer-app-1.onrender.com/users`);
         if (!response.ok) {
           throw new Error("Failed to fetch users.");
         }
@@ -44,7 +44,7 @@ export default function WalletCard() {
       if (user) {
         setLoading(true);
         try {
-          const response = await fetch(`http://127.0.0.1:5000/wallet/${user.user_id}`);
+          const response = await fetch(`https://money-transfer-app-1.onrender.com/wallet/${user.user_id}`);
           if (!response.ok) {
             throw new Error("Failed to fetch wallets.");
           }

@@ -87,33 +87,57 @@ useEffect(() => {
   // Top Up functionality
   const handleTopUp = async () => {
     try {
-      const response = await fetch("https://money-transfer-app-1.onrender.com/wallet/fund", {
+      // Step 1: Top up the wallet
+      const topUpResponse = await fetch("https://money-transfer-app-1.onrender.com/wallet/fund", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          user_id : user.user_id,
+          user_id: user.user_id,
           wallet_id: selectedWallet.wallet_id,
           amount: parseFloat(amount),
-        })
+        }),
       });
-
-      if (!response.ok) throw new Error("Failed to top up.");
-
-      const updatedWallet = await response.json();
+  
+      if (!topUpResponse.ok) throw new Error("Failed to top up.");
+  
+      const updatedWallet = await topUpResponse.json();
+  
+      // Update the wallet UI
       setWallets((prev) =>
         prev.map((wallet) =>
           wallet.wallet_id === updatedWallet.wallet_id ? updatedWallet : wallet
         )
       );
+  
+      // Step 2: Trigger the STK Push route
+      const stkPushResponse = await fetch("https://money-transfer-app-1.onrender.com/payments/stk_push", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.user_id,
+          amount: parseFloat(amount),
+        }),
+      });
+  
+      if (!stkPushResponse.ok) throw new Error("Failed to initiate STK Push.");
+  
+      const stkPushResult = await stkPushResponse.json();
+      console.log("STK Push successful:", stkPushResult);
+  
+      // Hide the top-up form and reset the amount
       setShowTopUpForm(false);
       setAmount(0);
+  
     } catch (error) {
       console.error(error.message);
       setError(error.message);
     }
   };
+  
 
   // Transfer functionality
   const handleTransfer = async () => {

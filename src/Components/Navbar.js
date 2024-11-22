@@ -3,6 +3,7 @@ import Login from "./LoginModal"; // Assuming this is the correct path
 import SignUpForm from "./SignUpModal";
 import { Link } from "react-router-dom";
 
+
 const Navbar = ({ isAuthenticated, username, handleLogout }) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);

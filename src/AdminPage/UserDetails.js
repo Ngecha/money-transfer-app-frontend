@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
-import "./userdetails.css";
+// import "./userdetails.css";
 import LeftNav from "../Components/LeftNav";
 
 const UserDetails = () => {
@@ -18,7 +18,7 @@ const UserDetails = () => {
         }
   
         try {
-          const response = await fetch(`http://127.0.0.1:5000/users`);
+          const response = await fetch(`https://money-transfer-app-1.onrender.com/users`);
           if (!response.ok) {
             throw new Error("Failed to fetch users.");
           }
@@ -45,7 +45,7 @@ const UserDetails = () => {
     async function fetchUserDetails() {
       if (user) {
         try {
-          const response = await fetch(`http://127.0.0.1:5000/user/${user.user_id}`);
+          const response = await fetch(`https://money-transfer-app-1.onrender.com/user/${user.user_id}`);
           if (!response.ok) {
             throw new Error("Failed to fetch user details.");
           }

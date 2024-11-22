@@ -46,7 +46,7 @@ const Beneficiaries = () => {
           if (user) {
             try {
               const response = await fetch(
-                `https://money-transfer-app-1.onrender.com/${user.user_id}`
+                `https://money-transfer-app-1.onrender.com//beneficiaries/${user.user_id}`
               );
               if (!response.ok) {
                 throw new Error("Failed to fetch beneficiaries.");
@@ -82,7 +82,7 @@ const Beneficiaries = () => {
                 },
                 body: JSON.stringify(newBeneficiary),
             });
-
+            window.location.reload()
             if (!response.ok) {
                 throw new Error("Failed to add beneficiary.");
             }

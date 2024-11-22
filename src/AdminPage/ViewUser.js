@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../styles/userList.css"; 
+// import "../styles/userList.css"; 
 
 function UserList() {
     const [userList, setUserList] = useState([]);
