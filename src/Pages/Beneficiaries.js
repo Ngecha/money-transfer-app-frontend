@@ -6,6 +6,8 @@ const Beneficiaries = () => {
     const [beneficiaries, setBeneficiaries] = useState([]);
     const [error, setError] = useState(null);
     const [user, setUser] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [beneficiaryemail, setBeneficiaryemail]=useState(null)
 
     // Fetch logged-in user
     useEffect(() => {
@@ -72,7 +74,7 @@ const Beneficiaries = () => {
         try {
             const newBeneficiary = {
                 user_id: user.user_id, 
-                beneficiary_email: prompt("Enter beneficiary email") 
+                beneficiary_email: beneficiaryemail,
             };
 
             const response = await fetch(`https://money-transfer-app-1.onrender.com/beneficiary/add`, {
@@ -89,6 +91,7 @@ const Beneficiaries = () => {
             window.location.reload()
             const addedBeneficiary = await response.json();
             setBeneficiaries((prevBeneficiaries) => [...prevBeneficiaries, addedBeneficiary]);
+            setShowModal(false)
             
 
         } catch (error) {
@@ -117,6 +120,11 @@ const Beneficiaries = () => {
         }
     };
 
+
+    const handleAddBeneficiary = () => {
+        setShowModal(true); 
+      };
+
     return (
         <div className="flex">
             <LeftNav />
@@ -127,11 +135,28 @@ const Beneficiaries = () => {
             <div className="flex justify-end mt-6">
                 <button
                     className="bg-blue-500 text-white py-2 px-4 rounded-md m-4 hover:bg-blue-600"
-                    onClick={addBeneficiary}
+                    onClick={handleAddBeneficiary}
                 >
                     Add Beneficiary
                 </button>
             </div>
+            {showModal && (
+          <div className="modal show" style={{ display: "block" }}>
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Add Beneficiary</h5>
+                </div>
+                <div className="modal-body">
+                  <input type="number" value={beneficiaryemail} onChange={(e) => setBeneficiaryemail(e.target.value)} className="form-control mb-3" placeholder="Enter email" />
+                </div>
+                <div className="modal-footer">
+                  <button onClick={addBeneficiary} className="btn btn-primary">Submit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
             {/* Error Handling */}
             {error && <p className="text-red-500 mt-4">{error}</p>}
