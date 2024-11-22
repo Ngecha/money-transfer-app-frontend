@@ -148,7 +148,7 @@ const Beneficiaries = () => {
                   <h5 className="modal-title">Add Beneficiary</h5>
                 </div>
                 <div className="modal-body">
-                  <input type="number" value={beneficiaryemail} onChange={(e) => setBeneficiaryemail(e.target.value)} className="form-control mb-3" placeholder="Enter email" />
+                  <input type="string" value={beneficiaryemail} onChange={(e) => setBeneficiaryemail(e.target.value)} className="form-control mb-3" placeholder="Enter email" />
                 </div>
                 <div className="modal-footer">
                   <button onClick={addBeneficiary} className="btn btn-primary">Submit</button>
